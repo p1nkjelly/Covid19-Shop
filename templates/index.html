@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>재난지원금 가맹점 안내</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css">
+  <script type="text/javascript" src="../static/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript">
+    (function getLocation() {
+      var gps_result = {}
+      function set_string(data) {
+        var cafe_element = document.getElementById('cafe');
+        cafe_element.innerText = "내 주변에 " + data['cafe'] + "곳";
+        var conbini_element = document.getElementById('conbini');
+        conbini_element.innerText = "내 주변에 " + data['conbini'] + "곳";
+        var shop_element = document.getElementById('shop');
+        shop_element.innerText = "내 주변에 " + data['shop'] + "곳";
+        var clothes_element = document.getElementById('clothes');
+        clothes_element.innerText = "내 주변에 " + data['clothes'] + "곳";
+        var pharmacy_element = document.getElementById('pharmacy');
+        pharmacy_element.innerText = "내 주변에 " + data['pharmacy'] + "곳";
+        var hospital_element = document.getElementById('hospital');
+        hospital_element.innerText = "내 주변에 " + data['hospital'] + "곳";
+        var bookshop_element = document.getElementById('bookshop');
+        bookshop_element.innerText = "내 주변에 " + data['bookshop'] + "곳";
+      }
+      function send_post() {
+        $.ajax({
+          url: "{{ url_for('api') }}",
+          type: "POST",
+          data: {
+            'latitude':gps_result['latitude'],
+            'longitude':gps_result['longitude']
+          }
+        }).done(function (result) {
+          set_string(result); //비동기
+        });
+      }
+      function set_cookie() {
+        $.ajax({
+          url: "{{ url_for('setcookie') }}",
+          type: "POST",
+          data: {
+            'latitude':gps_result['latitude'],
+            'longitude':gps_result['longitude']
+          }
+        });
+      }
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          gps_result['latitude'] = position.coords.latitude;
+          gps_result['longitude'] = position.coords.longitude;
+          send_post()
+          set_cookie()
+        }, function error(error) {
+          console.error(error);
+        }, {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: Infinity
+        });
+
+      } else {
+        console.error('no gps');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <nav class="navbar navbar-light">
+    <div class="container d-flex justify-content-center"> <a class="navbar-brand text-primary" href="{{ url_for('index') }}">
+        <b class="text-dark"> 재난지원금 가맹점</b>
+      </a> </div>
+  </nav>
+  <div class="py-5">
+    <div class="container">
+      <div class="row ">
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('category', type = 'cafe') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/cafeteria.png">
+            <div class="card-body" style="">
+              <h4 class="card-title text-center">음식점</h4>
+              <p class="card-text text-center" id="cafe">내 주변 음식점 찾는 중...</p>
+            </div>
+          </div>
+          </a>
+        </div>
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('category', type = 'conbini') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/conbini2.png">
+            <div class="card-body">
+              <h4 class="card-title text-center">편의점</h4>
+              <p class="card-text text-center" id="conbini">내 주변 편의점 찾는 중...</p>
+            </div>
+          </div>
+          </a>
+        </div>
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('category', type = 'shop') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/shop_.png">
+            <div class="card-body">
+              <h4 class="card-title text-center">마트</h4>
+              <p class="card-text text-center" id="shop">내 주변 마트 찾는 중...</p>
+            </div>
+          </div>
+          </a>
+        </div>
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('category', type = 'clothes') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/clothes.png">
+            <div class="card-body">
+              <h4 class="card-title text-center">의류</h4>
+              <p class="card-text text-center" id="clothes">내 주변 옷가게 찾는 중...</p>
+            </div>
+          </div>
+          </a>
+        </div>
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('category', type = 'pharmacy') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/pharmacy_.png">
+            <div class="card-body">
+              <h4 class="card-title text-center">약국</h4>
+              <p class="card-text text-center" id="pharmacy">내 주변 약국 찾는 중...</p>
+            </div>
+          </div>
+          </a>
+        </div>
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('category', type = 'hospital') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/hospital_.png">
+            <div class="card-body">
+              <h4 class="card-title text-center">병원</h4>
+              <p class="card-text text-center" id="hospital">내 주변 병원 찾는 중...</p>
+            </div>
+          </div>
+          </a>
+        </div>
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('category', type = 'bookshop') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/bookshop.png">
+            <div class="card-body">
+              <h4 class="card-title text-center">서점<br></h4>
+              <p class="card-text text-center" id="bookshop">내 주변 병원 찾는 중...</p>
+            </div>
+          </div>
+          </a>
+        </div>
+        <div class="col-md-3 mt-3">
+          <a class="text-center text-dark" href="{{ url_for('search') }}">
+          <div class="card"> <img class="img-fluid d-block rounded-circle" src="../static/search_.png">
+            <div class="card-body" style="">
+              <h4 class="card-title text-center">검색</h4>
+              <p class="card-text text-center">기타 가맹점 검색하기</p>
+            </div>
+          </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="py-5">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-md-12 text-center w-75" style=""><a class="btn btn-info text-center w-100" href="https://m.bccard.com/app/mobileweb/GiftCardInq.do?exec=balanceCard" target="_blank">재난지원금 선불카드 잔액 확인하기</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <p class="mb-0">© 2020 <a href="https://pinkjelly.cat" style="color: #ed7186;">P1nkjelly</a> All rights reserved</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+</html>

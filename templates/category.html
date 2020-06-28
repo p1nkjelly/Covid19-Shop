@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>{{ category }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="https://static.pingendo.com/bootstrap/bootstrap-4.3.1.css">
+</head>
+
+<body>
+  <nav class="navbar navbar-light">
+    <div class="container d-flex justify-content-center"> <a class="navbar-brand text-primary" href="{{ url_for('index') }}">
+        <b class="text-dark"> 재난지원금 가맹점</b>
+      </a> </div>
+  </nav>
+  <div class="py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10">
+          <h1 class="mb-3">{{ category }}</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {% for line in data %}
+          <div class="card mb-3">
+            <a onclick="if (card{{loop.index}}.style.display=='none') {card{{loop.index}}.style.display='';map{{loop.index}}.relayout();map{{loop.index}}.setCenter(new kakao.maps.LatLng({{latitude}}, {{longitude}}));} else {card{{loop.index}}.style.display='none';}"><div class="card-header">{{ line[1] }}</div></a>
+            <div id="card{{loop.index}}" class="card-body" style="display: none">
+              <h4>주소 : {{line[3]}}<br></h4>
+                <div id="map{{loop.index}}" style="width:100%;height:400px;" class="col-md-12"></div>
+                <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=784661333d723bf50c4e6386004e9325"></script>
+                <!-- 카카오맵 API　코드 사용 -->
+                <script>
+                  var mapContainer{{loop.index}} = document.getElementById('map{{loop.index}}'), // 지도를 표시할 div
+                          mapOption = {
+                            center: new kakao.maps.LatLng({{latitude}}, {{longitude}}), // 지도의 중심좌표
+                            level: 4 // 지도의 확대 레벨
+                          };
+
+                  var map{{loop.index}} = new kakao.maps.Map(mapContainer{{loop.index}}, mapOption); // 지도를 생성합니다
+
+                  // 마커가 표시될 위치입니다
+                  var markerPosition{{loop.index}}  = new kakao.maps.LatLng({{ line[7] }}, {{ line[8] }});
+
+                  // 마커를 생성합니다
+                  var marker{{loop.index}} = new kakao.maps.Marker({
+                    position: markerPosition{{loop.index}}
+                  });
+
+                  // 마커가 지도 위에 표시되도록 설정합니다
+                  marker{{loop.index}}.setMap(map{{loop.index}});
+                </script>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="row">
+      </div>
+    </div>
+  </div>
+  <div class="py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <p class="mb-0">© 2020 <a href="https://pinkjelly.cat" style="color: #ed7186;">P1nkjelly</a> All rights reserved</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous" style=""></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+</html>
